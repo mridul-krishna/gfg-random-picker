@@ -1,44 +1,52 @@
 # GFG Random Question Picker
 
-A Chrome extension that randomly selects a problem from the currently loaded GeeksforGeeks practice problems.
+A Chrome extension that helps you pick a random GeeksforGeeks practice problem from the questions currently available on the page.
 
 ## Features
 
-- Detects GFG problem rows
-- Removes duplicate problem entries
-- Counts available problems
-- Randomly selects a problem
-- Opens the selected problem using GFG's own interface
-- Loads all available problems with the Load All button
-- Can ignore already solved problems
-- Shows or hides the Load All button from the extension settings
-- Updates the problem count when GFG filters are changed
+- Pick a random question from the current GFG problem list
+- Follow the filters currently selected on the GFG page
+- See how many questions are available for selection
+- Optionally ignore questions that have already been solved
+- Load all available questions from the difficulty sections
+- Show or hide the Load All button
+- Remember your settings between sessions
 
 ## How It Works
 
-The extension reads the problems currently displayed on the GFG practice page and uses them as the pool for random selection.
+The extension uses the questions currently available on the GFG practice page as the selection pool.
 
-The Random button follows the filters currently applied on the page.
+The Random button follows the filters applied on the page. If Ignore Solved is enabled, solved questions are excluded from the selection.
 
-When Ignore Solved is enabled, solved problems are removed from the selection pool.
-
-Load All can be used to load the remaining problems from the visible difficulty sections before picking a question.
+Load All can be used when you want to include questions that are not initially loaded on the page.
 
 ## Installation
 
 1. Clone or download this repository.
-2. Open `chrome://extensions/` in Chrome.
-3. Enable Developer Mode.
-4. Click "Load unpacked".
-5. Select the project folder.
+2. Extract the repository if it was downloaded as a ZIP.
+3. Open `chrome://extensions/` in Google Chrome.
+4. Enable Developer mode.
+5. Click Load unpacked.
+6. Select the project folder containing `manifest.json`.
+7. Open a GeeksforGeeks practice problem list.
 
 ## Usage
 
 1. Open a GeeksforGeeks practice problem list.
-2. Apply any filters you want on the GFG page.
-3. Use the Random button to open a question.
-4. Use Load All if you want to include all available problems.
-5. Open the extension popup to change settings.
+2. Apply the filters you want.
+3. Use the Random button to pick a question.
+4. Enable Ignore Solved from the extension popup if needed.
+5. Use Load All if you want to include all available questions.
+6. Use the extension popup to change its settings.
+
+## Changes in V1.1
+
+- Added Load All
+- Added Ignore Solved
+- Added Show/Hide Load All setting
+- Added persistent settings
+- Added filter-aware question counts
+- Updated the extension UI
 
 ## Version
 
