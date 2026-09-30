@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "GFG Random Question Picker",
+  "version": "1.0.0",
+  "description": "Randomly opens a GeeksforGeeks question from the current topic page.",
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.geeksforgeeks.org/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "GFG Random Picker"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.geeksforgeeks.org/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
+}
