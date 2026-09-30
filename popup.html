@@ -9,19 +9,52 @@
 
     <div class="container">
 
-        <h2>GFG Random Picker</h2>
+        <div class="header">
+            <div class="icon">🎲</div>
 
-        <p id="status">
-            Checking page...
-        </p>
+            <div>
+                <h2>GFG Random Picker</h2>
+                <p>Practice smarter, one problem at a time.</p>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <span class="status-dot"></span>
+            <span id="status">Checking page...</span>
+        </div>
 
         <button id="randomButton">
             Pick Random
         </button>
 
+        <div class="settings-section">
+            <div class="section-title">Settings</div>
+
+            <label class="setting">
+                <div>
+                    <strong>Show Load All</strong>
+                    <span>Show the Load All button on GFG.</span>
+                </div>
+
+                <input type="checkbox" id="showLoadAll" checked>
+            </label>
+
+            <label class="setting">
+                <div>
+                    <strong>Ignore solved questions</strong>
+                    <span>Only pick questions you haven't solved.</span>
+                </div>
+
+                <input type="checkbox" id="ignoreSolved">
+            </label>
+        </div>
+
+        <div class="footer">
+            GFG Random Picker
+        </div>
+
     </div>
 
     <script src="popup.js"></script>
-
 </body>
 </html>
