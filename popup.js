@@ -103,13 +103,39 @@ function updateLoadAllButton(show) {
     );
 }
 
+function updateIgnoreSolved(ignore) {
+    chrome.tabs.query(
+        { active: true, currentWindow: true },
+        (tabs) => {
+            if (!tabs[0]?.id) return;
+
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "SET_IGNORE_SOLVED",
+                ignore
+            });
+        }
+    );
+}
+
 
 chrome.storage.local.get(
-    { showLoadAll: true },
+    {
+        showLoadAll: true,
+        ignoreSolved: false
+    },
     (settings) => {
         showLoadAll.checked = settings.showLoadAll;
+        ignoreSolved.checked = settings.ignoreSolved;
     }
 );
+
+ignoreSolved.addEventListener("change", () => {
+    chrome.storage.local.set({
+        ignoreSolved: ignoreSolved.checked
+    });
+
+    updateIgnoreSolved(ignoreSolved.checked);
+});
 
 showLoadAll.addEventListener("change", () => {
     chrome.storage.local.set({

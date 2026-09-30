@@ -1,7 +1,13 @@
 console.log("GFG Random Picker loaded");
+let ignoreSolved = false;
 
 function getProblemRows() {
-    return [...document.querySelectorAll('[class*="problemRow"]')];
+    return [...document.querySelectorAll('[class*="problemRow"]')]
+        .filter(row =>
+            row.offsetWidth ||
+            row.offsetHeight ||
+            row.getClientRects().length
+        );
 }
 
 function getProblemName(row) {
@@ -11,13 +17,21 @@ function getProblemName(row) {
         .trim();
 }
 
-function getUniqueProblems() {
+function getUniqueProblems(ignoreSolved = false) {
     const rows = getProblemRows();
 
     const problems = [];
     const seen = new Set();
 
     for (const row of rows) {
+
+        if (
+            ignoreSolved &&
+            row.querySelector('[class*="problemStatusSolved"]')
+        ) {
+            continue;
+        }
+
         const name = getProblemName(row);
 
         if (!name || seen.has(name)) {
@@ -73,6 +87,7 @@ async function loadAllQuestions() {
     }
 
     const count = getUniqueProblems().length;
+    // const count = getUniqueProblems(ignoreSolved).length;
 
     console.log(`Finished loading. Clicks: ${clicks}`);
     console.log(`Total questions: ${count}`);
@@ -94,9 +109,9 @@ function updatePickerButton() {
         return;
     }
     
-    const count = getUniqueProblems().length;
+    const count = getUniqueProblems(ignoreSolved).length;    
     
-    button.textContent = `🎲 Pick Random (${count})`;
+    button.textContent = `Random · ${count}`;
 }
 
 
@@ -122,22 +137,22 @@ function addPickerButton() {
         button.id = "gfg-random-picker-button";
         
         const count = getUniqueProblems().length;
-        button.textContent = `🎲 Pick Random (${count})`;
+        button.textContent = `Random · ${count}`;
         
         button.style.cssText = `
-        padding: 8px 14px;
+        padding: 7px 12px;
         margin-left: 8px;
-        border: 1px solid #2f80ed;
-        border-radius: 6px;
-        background: white;
-        color: #2f80ed;
-        font-size: 14px;
+        border: 1px solid #2f8d46;
+        border-radius: 5px;
+        background: transparent;
+        color: #2f8d46;
+        font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         `;
 
     button.addEventListener("click", () => {
-        const problems = getUniqueProblems();
+        const problems = getUniqueProblems(ignoreSolved);
         
         if (problems.length === 0) {
             button.textContent = "No questions found";
@@ -161,13 +176,13 @@ loadButton.id = "gfg-load-all-button";
 loadButton.textContent = "Load All";
 
 loadButton.style.cssText = `
-    padding: 8px 14px;
-    margin-left: 8px;
+    padding: 7px 13px;
+    margin-left: 6px;
     border: 1px solid #777;
     border-radius: 6px;
-    background: white;
-    color: #444;
-    font-size: 14px;
+    background: #f5f5f5;
+    color: #333;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
 `;
@@ -185,15 +200,39 @@ setTimeout(updatePickerButton, 1000);
 
 addPickerButton();
 
+
+document.addEventListener("click", (event) => {
+    const filterElement = event.target.closest(
+        '[class*="hFilter"], [class*="diffBlock"], [class*="topicBlock"]'
+    );
+
+    if (!filterElement) {
+        return;
+    }
+
+    setTimeout(() => {
+        updatePickerButton();
+    }, 500);
+});
+
 chrome.storage.local.get(
-    { showLoadAll: true },
+    {
+        showLoadAll: true,
+        ignoreSolved: false
+    },
     (settings) => {
-        const loadButton = document.getElementById("gfg-load-all-button");
+
+        ignoreSolved = settings.ignoreSolved;
+
+        const loadButton =
+            document.getElementById("gfg-load-all-button");
 
         if (loadButton) {
             loadButton.style.display =
                 settings.showLoadAll ? "" : "none";
         }
+
+        updatePickerButton();
     }
 );
 
@@ -212,7 +251,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (message.type === "PICK_RANDOM") {
-        const problems = getUniqueProblems();
+        const problems = getUniqueProblems(ignoreSolved);
 
         if (problems.length === 0) {
             sendResponse({
@@ -248,4 +287,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         
         return true;
     }
+    
+    if (message.type === "SET_IGNORE_SOLVED") {
+    ignoreSolved = message.ignore;
+
+    updatePickerButton();
+
+    return true;
+}
+
 });
