@@ -1,5 +1,6 @@
 const status = document.getElementById("status");
 const randomButton = document.getElementById("randomButton");
+const showLoadAll = document.getElementById("showLoadAll");
 
 function sendMessage(message) {
     return new Promise((resolve, reject) => {
@@ -86,4 +87,34 @@ randomButton.addEventListener("click", async () => {
             randomButton.disabled = false;
         }, 1000);
     }
+});
+
+function updateLoadAllButton(show) {
+    chrome.tabs.query(
+        { active: true, currentWindow: true },
+        (tabs) => {
+            if (!tabs[0]?.id) return;
+
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "SET_SHOW_LOAD_ALL",
+                show
+            });
+        }
+    );
+}
+
+
+chrome.storage.local.get(
+    { showLoadAll: true },
+    (settings) => {
+        showLoadAll.checked = settings.showLoadAll;
+    }
+);
+
+showLoadAll.addEventListener("change", () => {
+    chrome.storage.local.set({
+        showLoadAll: showLoadAll.checked
+    });
+
+    updateLoadAllButton(showLoadAll.checked);
 });

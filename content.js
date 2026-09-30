@@ -185,6 +185,18 @@ setTimeout(updatePickerButton, 1000);
 
 addPickerButton();
 
+chrome.storage.local.get(
+    { showLoadAll: true },
+    (settings) => {
+        const loadButton = document.getElementById("gfg-load-all-button");
+
+        if (loadButton) {
+            loadButton.style.display =
+                settings.showLoadAll ? "" : "none";
+        }
+    }
+);
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -224,6 +236,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             count: problems.length
         });
 
+        return true;
+    }
+
+    if (message.type === "SET_SHOW_LOAD_ALL") {
+        const loadButton = document.getElementById("gfg-load-all-button");
+        
+        if (loadButton) {
+            loadButton.style.display = message.show ? "" : "none";
+        }
+        
         return true;
     }
 });
